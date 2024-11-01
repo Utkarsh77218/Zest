@@ -6,13 +6,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { createWorkspaceSchema } from "../schemas";
 
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { DottedSeparator } from "@/components/dotted-separator";
-import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
-  CardTitle 
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -21,14 +18,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { useCreateWorkspace } from "../api/use-create-workspace";
 
 interface CreateWorkspaceFormProps {
   onCancel?: () => void;
 }
 
 export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
+  const { mutate, isPending } = useCreateWorkspace();
+
   const form = useForm<z.infer<typeof createWorkspaceSchema>>({
     resolver: zodResolver(createWorkspaceSchema),
     defaultValues: {
@@ -37,7 +35,7 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
   });
 
   const onSubmit = (values: z.infer<typeof createWorkspaceSchema>) => {
-    console.log({ values });
+    mutate({ json: values });
   };
 
   return (
@@ -53,24 +51,39 @@ export const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
       <CardContent className="p-7">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div>
+            <div className="flex flex-col gap-y-4">
               <FormField
                 control={form.control}
                 name="name"
-                render={({ field }) => {
+                render={({ field }) => (
                   <FormItem>
                     <FormLabel>Workspace name</FormLabel>
                     <FormControl>
-                      <Input 
-                        {...field} 
-                        placeholder="Enter workspace name" 
-                      />
+                      <Input {...field} placeholder="Enter workspace name" />
                     </FormControl>
                     <FormMessage />
-                  </FormItem>;
-                }}
+                  </FormItem>
+                )}
               />
-              <Button></Button>
+            </div>
+            <DottedSeparator className="py-7" />
+            <div className="flex items-center justify-between">
+              <Button
+                type="button"
+                size={"lg"}
+                variant={"secondary"}
+                onClick={onCancel}
+                disabled={isPending}
+              >
+                Cancel
+              </Button>
+              <Button 
+                type="submit" 
+                size={"lg"} 
+                disabled={isPending}
+              >
+                Create Workspace
+              </Button>
             </div>
           </form>
         </Form>
