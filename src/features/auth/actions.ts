@@ -21,5 +21,4 @@ export const getCurrent = async () => {
     } catch (error) {
         return null;
     }
-
 };
