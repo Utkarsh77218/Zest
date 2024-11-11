@@ -21,7 +21,7 @@ const WorkspaceIdSettingsPage = async ({ params }: WorkspaceIdSettingsPageProps)
     }
 
     return (
-        <div>
+        <div className="w-full lg:max-w-xl">
             <EditWorkspaceForm initialValues={initialValues} />
         </div>
     );
