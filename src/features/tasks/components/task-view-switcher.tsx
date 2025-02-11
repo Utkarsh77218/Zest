@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { Loader, PlusIcon } from "lucide-react";
 import { useQueryState } from "nuqs";
 
@@ -10,11 +11,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCreateTaskModal } from "../hooks/use-create-task-modal";
 import { useGetTasks } from "../api/use-get-tasks";
 import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
-import { DataFilters } from "./data-filters";
 import { useTaskFilters } from "../hooks/use-task-filters";
+import { TaskStatus } from "../types";
+
+import { DataFilters } from "./data-filters";
 
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
+import { DataKanban } from "./data-kanban";
+import { useBulkUpdateTasks } from "../api/use-bulk-update-tasks";
 
 export const TaskViewSwitcher = () => {
   const [{
@@ -29,14 +34,28 @@ export const TaskViewSwitcher = () => {
   });
 
   const workspaceId = useWorkspaceId();
-  const { data: tasks, isLoading: isLoadingTasks } = useGetTasks({
+  const { open } = useCreateTaskModal();
+
+  const { mutate: bulkUpdate } = useBulkUpdateTasks();
+
+  const { 
+    data: tasks, 
+    isLoading: isLoadingTasks 
+  } = useGetTasks({
     workspaceId,
     projectId,
     assigneeId,
     status,
     dueDate,
   });
-  const { open } = useCreateTaskModal();
+
+  const onKanbanChange = useCallback((
+    tasks: { $id: string; status: TaskStatus; position: number; }[]
+  ) => {
+    bulkUpdate({
+      json: { tasks },
+    })
+  }, [bulkUpdate]);
 
   return (
     <div>
@@ -76,7 +95,7 @@ export const TaskViewSwitcher = () => {
                 <DataTable columns={columns} data={tasks ?? []} />
               </TabsContent>
               <TabsContent value="kanban" className="mt-0">
-                {JSON.stringify(tasks)}
+                <DataKanban onChange={onKanbanChange} data={tasks ?? []} />
               </TabsContent>
               <TabsContent value="calendar" className="mt-0">
                 {JSON.stringify(tasks)}
