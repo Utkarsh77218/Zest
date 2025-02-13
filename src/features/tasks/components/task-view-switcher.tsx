@@ -16,6 +16,7 @@ import { TaskStatus } from "../types";
 
 import { DataFilters } from "./data-filters";
 
+import { DataCalendar } from "./data-calendar";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
 import { DataKanban } from "./data-kanban";
@@ -97,8 +98,8 @@ export const TaskViewSwitcher = () => {
               <TabsContent value="kanban" className="mt-0">
                 <DataKanban onChange={onKanbanChange} data={tasks ?? []} />
               </TabsContent>
-              <TabsContent value="calendar" className="mt-0">
-                {JSON.stringify(tasks)}
+              <TabsContent value="calendar" className="mt-0 h-full pb-4">
+                <DataCalendar data={tasks ?? []} />
               </TabsContent>
             </>
           )}
