@@ -1,4 +1,3 @@
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { InferRequestType, InferResponseType } from "hono";
@@ -10,7 +9,6 @@ type RequestType = InferRequestType<typeof client.api.projects[':projectId']["$p
 
 export const useUpdateProject = () => {
     const queryClient = useQueryClient();
-    const router = useRouter();
 
     const mutation = useMutation<
         ResponseType,
@@ -28,7 +26,6 @@ export const useUpdateProject = () => {
         },
         onSuccess: ({ data }) => {
             toast.success("Project Updated");
-            router.refresh();
             queryClient.invalidateQueries({ queryKey: ['projects'] });
             queryClient.invalidateQueries({ queryKey: ['project', data.$id] });
         },
