@@ -33,7 +33,7 @@ export const Projects = () => {
           const isActive = pathname === href;
 
           return (
-            <Link href={href}>
+            <Link href={href} key={project.$id}>
               <div className={cn(
                 "flex items-center gap-2.5 p-2.5 rounded-md hover:opacity-75 transition cursor-poinnter text-neutral-500",
                 isActive && "bg-white shadow-sm hover:opacity-100 text-primary"
