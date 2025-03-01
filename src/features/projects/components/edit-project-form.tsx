@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { z } from "zod";
-import { toast } from "sonner";
 import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -245,7 +244,7 @@ export const EditProjectForm = ({
               size='sm'
               variant='destructive'
               type="button"
-              disabled={isPending }
+              disabled={isPending || isDeleteingProject}
               onClick={handleDelete}
             >
               Delete Project

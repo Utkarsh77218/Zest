@@ -32,8 +32,6 @@ export const WorkspaceIdClient = () => {
     const { data: projects, isLoading: isLoadingProjects } = useGetProjects({ workspaceId });
     const { data: members, isLoading: isLoadingMembers } = useGetMembers({ workspaceId });
 
-    console.log(projects)
-
     const isLoading = 
         isLoadingAnalytics ||
         isLoadingTasks ||

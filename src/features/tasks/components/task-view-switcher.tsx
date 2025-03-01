@@ -8,10 +8,11 @@ import { DottedSeparator } from "@/components/dotted-separator";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { useCreateTaskModal } from "../hooks/use-create-task-modal";
 import { useGetTasks } from "../api/use-get-tasks";
-import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
 import { useTaskFilters } from "../hooks/use-task-filters";
+import { useCreateTaskModal } from "../hooks/use-create-task-modal";
+import { useProjectId } from "@/features/projects/hooks/use-project-id";
+import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
 import { TaskStatus } from "../types";
 
 import { DataFilters } from "./data-filters";
@@ -39,6 +40,7 @@ export const TaskViewSwitcher = ({ hideProjectFilter }: TaskViewSwitcherProps) =
   });
 
   const workspaceId = useWorkspaceId();
+  const paramProjectId = useProjectId();
   const { open } = useCreateTaskModal();
 
   const { mutate: bulkUpdate } = useBulkUpdateTasks();
@@ -48,7 +50,7 @@ export const TaskViewSwitcher = ({ hideProjectFilter }: TaskViewSwitcherProps) =
     isLoading: isLoadingTasks 
   } = useGetTasks({
     workspaceId,
-    projectId,
+    projectId: paramProjectId || projectId,
     assigneeId,
     status,
     dueDate,

@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { Hono } from "hono";
 import { deleteCookie, setCookie } from "hono/cookie";
 import { zValidator } from "@hono/zod-validator";

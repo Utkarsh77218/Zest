@@ -7,11 +7,12 @@ import { getMember } from "@/features/members/utils";
 
 import { createAdminClient } from "@/lib/appwrite";
 import { sessionMiddleware } from "@/lib/session-middleware";
-import { DATABASE_ID, MEMBERS_ID, PROJECTS_ID, TASKS_ID, WORKSPACE_ID } from "@/config";
+import { DATABASE_ID, MEMBERS_ID, PROJECTS_ID, TASKS_ID } from "@/config";
 
 import { createTaskSchema } from "../schemas";
 import { Task, TaskStatus } from "../types";
 import { Project } from "@/features/projects/types";
+import { Member } from "@/features/members/types";
 
 const app = new Hono()
     .get(
@@ -276,22 +277,15 @@ const app = new Hono()
         "/:taskId",
         sessionMiddleware,
         async (c) => {
-            const currentUser = c.get("user");
             const databases = c.get("databases");
-            const { users } =await createAdminClient();
+            const { users } = await createAdminClient();
             const { taskId } = c.req.param();
 
-            const task = await databases.getDocument(
+            const task = await databases.getDocument<Task>(
                 DATABASE_ID,
                 TASKS_ID,
                 taskId,
             );
-
-            const currentMember = await getMember({
-                databases,
-                workspaceId: task.workspaceId,
-                userId: currentUser.$id,
-            });
 
             const project = await databases.getDocument<Project>(
                 DATABASE_ID,
@@ -299,7 +293,7 @@ const app = new Hono()
                 task.projectId,
             );
 
-            const member = await databases.getDocument(
+            const member = await databases.getDocument<Member>(
                 DATABASE_ID,
                 MEMBERS_ID,
                 task.assigneeId,
@@ -353,7 +347,11 @@ const app = new Hono()
                 return c.json({ error: 'All tasks must belong to the same workspace' });
             }
 
-            const workspaceId = workspaceIds.values().next().value || '';
+            const workspaceId = workspaceIds.values().next().value;
+
+            if (!workspaceId) {
+                return c.json({ error: 'Workspace id is required' }, 400);
+            }
 
             const member = await getMember({
                 databases,
