@@ -9,8 +9,8 @@ import { Projects } from "./projects";
 export const Sidebar = () => {
     return (
         <aside className="h-full bg-neutral-100 p-4 w-full">
-            <Link href='/'>
-                <Image src='/logo.svg' alt="logo" width={46} height={48} />
+            <Link href="/" className='flex items-center p-3 rounded-md'>
+                 <Image src="/logo.svg" alt="logo" height={46} width={48} /><p className='ml-2 font-bold text-xl'>Zest</p>
             </Link>
             <DottedSeparator className="my-4" />
             <WorkspaceSwitcher />
